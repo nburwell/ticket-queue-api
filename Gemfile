@@ -5,6 +5,7 @@ ruby "2.1.2"
 gem 'rails', '4.2.4'
 gem 'pg'
 gem 'redis'
+gem 'hobo_fields'
 
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'

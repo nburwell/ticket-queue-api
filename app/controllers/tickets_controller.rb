@@ -3,8 +3,9 @@ class TicketsController < ApplicationController
 
   before_filter :find_ticket, except: [:index, :new, :create]
   
+  SAFE_ATTRIBUTES = [:name, :message, :queue]
   def index
-    tickets = Ticket.all
+    tickets = params[:ticket_queue_id] ? Ticket.where(queue: params[:ticket_queue_id]) : Ticket.all
     render json: tickets
   end
   
@@ -13,14 +14,14 @@ class TicketsController < ApplicationController
   end
   
   def create
-    ticket = Ticket.create!(params[:ticket].permit(:name, :message))
+    ticket = Ticket.create!(params[:ticket].permit(*SAFE_ATTRIBUTES))
     render json: ticket
   rescue ActiveRecord::RecordInvalid => ex
     render json: { success: false, errors: ex.message }, status: :unprocessable_entity    
   end
   
   def update
-    ticket = @ticket.update_attributes!(params[:ticket].permit(:name, :message))
+    ticket = @ticket.update_attributes!(params[:ticket].permit(*SAFE_ATTRIBUTES))
     render json: ticket
   rescue ActiveRecord::RecordInvalid => ex
     render json: { success: false, errors: ex.message }, status: :unprocessable_entity    

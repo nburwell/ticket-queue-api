@@ -29,20 +29,24 @@ def show_response response, color
   puts "Status:   " + "#{response.code} (#{Rack::Utils::HTTP_STATUS_CODES[response.code]})".colorize(color)
   
   puts response.headers.inspect
+  
+  json = nil
   body = 
     begin
-      JSON.pretty_generate(JSON.parse(response.body))
+      json = JSON.parse(response.body)
+      JSON.pretty_generate(json)
     rescue JSON::ParserError => ex
       response.body
     end
 
   puts "Response: #{body.colorize(:light_cyan)}"
   puts "---\n\n"
-  nil
+
+  json
 end
 
 # ------------------------------
-/localhost:3002/tickets")
+resource = RestClient::Resource.new("http://localhost:3002/tickets")
 
 TICKET_NAME = "api test"
 Ticket.where(name: TICKET_NAME).destroy_all
@@ -68,3 +72,33 @@ api { resource.get }
 api { resource["#{t.id}.json"].delete() }
 
 api { resource.get }
+
+
+# queues
+api { resource.post({ ticket: { name: TICKET_NAME, queue: "a" } }) }
+api { resource.post({ ticket: { name: TICKET_NAME + "b1", queue: "b" } }) }
+api { resource.post({ ticket: { name: TICKET_NAME + "b2", queue: "b" } }) }
+
+json = api { resource.get }
+if json
+  if json.length == 3
+    puts "Found #{json.length}"
+  else
+    raise "Unexpected length of tickets found: #{json.length}"
+  end
+else
+  raise "ERROR getting response in queues test"
+end
+
+queue_resource = RestClient::Resource.new("http://localhost:3002/ticket_queues/b/tickets")
+
+json = api { queue_resource.get }
+if json
+  if json.length == 2
+    puts "Found #{json.length}"
+  else
+    raise "Unexpected length of tickets found: #{json.length}"
+  end
+else
+  raise "ERROR getting response in queues test"
+end
