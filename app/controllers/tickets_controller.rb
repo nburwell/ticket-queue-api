@@ -15,7 +15,6 @@ class TicketsController < ApplicationController
   
   def create
     ticket = Ticket.create!(params[:ticket].permit(*SAFE_ATTRIBUTES))
-    $redis.publish 'tickets', { id: ticket.id }
     $redis.publish 'tickets:add', ticket.as_json
     render json: ticket
   rescue ActiveRecord::RecordInvalid => ex
