@@ -15,20 +15,23 @@ class TicketsController < ApplicationController
   
   def create
     ticket = Ticket.create!(params[:ticket].permit(*SAFE_ATTRIBUTES))
+    $redis.publish 'tickets:add', ticket.as_json
     render json: ticket
   rescue ActiveRecord::RecordInvalid => ex
     render json: { success: false, errors: ex.message }, status: :unprocessable_entity    
   end
   
   def update
-    ticket = @ticket.update_attributes!(params[:ticket].permit(*SAFE_ATTRIBUTES))
-    render json: ticket
+    @ticket.update_attributes!(params[:ticket].permit(*SAFE_ATTRIBUTES))
+    $redis.publish 'tickets:update', @ticket.as_json
+    render json: @ticket
   rescue ActiveRecord::RecordInvalid => ex
     render json: { success: false, errors: ex.message }, status: :unprocessable_entity    
   end
   
   def destroy
     @ticket.destroy
+    $redis.publish 'tickets:destroy', @ticket.as_json
     render json: { success: true }
   end
   
