@@ -3,7 +3,7 @@ class Ticket < ActiveRecord::Base
     name      :string
     queue     :string
     message   :string
-    complete  :boolean
+    complete  :boolean, null: false, default: false
 
     timestamps
   end

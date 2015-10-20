@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
   root 'ticket_queue#index'
 
-  resources :tickets
+  namespace :api, defaults: { format: :json } do
+    resources :tickets
+  end
   
   resources :ticket_queues do
     resources :tickets
