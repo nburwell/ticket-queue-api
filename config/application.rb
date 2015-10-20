@@ -25,7 +25,7 @@ module Api
     
     config.middleware.insert_before 0, "Rack::Cors" do
       allow do
-        origins '*'
+        origins /localhost:(\d+)/, /127.0.0.1:(\d+)/, 'nickburwell.xyz'
         resource '*', :headers => :any, :methods => [:get, :post, :delete, :options]
       end
     end

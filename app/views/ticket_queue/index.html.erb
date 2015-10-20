@@ -1,12 +1,12 @@
 <h2>Ticket Queue API</h2>
 <p>
-  The time is now: <%= Time.now %>
+  <%= Time.now %>
 </p>
 
-From rails:
-<%= $redis.get("foo") %>
-
-<hr />
-
-From node:
-<%= $redis.get("bar") %>
+<ul>
+  <% @ticket_counts.each do |queue, count| %>
+    <li>
+      <b><%= queue || 'unknown' %></b>: <%= count %>
+    </li>
+  <% end %>
+</ul>

@@ -1,5 +1,5 @@
 class TicketQueueController < ApplicationController
   def index
-    $redis.set "foo", "from rails"
+    @ticket_counts = Ticket.group(:queue).count
   end
 end
