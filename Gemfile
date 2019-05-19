@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
-ruby "2.1.2"
+ruby "2.4.2"
 
-gem 'rails', '4.2.4'
+gem 'rails', '4.2.11'
 gem 'pg'
 gem 'redis'
 gem 'hobo_fields'
