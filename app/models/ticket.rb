@@ -1,9 +1,9 @@
 class Ticket < ActiveRecord::Base
-  fields do
-    name      :string
-    queue     :string
-    message   :string
-    complete  :boolean, null: false, default: false
+  declare_schema do
+    string :name
+    string :queue
+    string :message
+    boolean :complete, null: false, default: false
 
     timestamps
   end

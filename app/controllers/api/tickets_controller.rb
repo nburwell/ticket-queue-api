@@ -2,7 +2,7 @@ module Api
   class TicketsController < BaseController
     respond_to :json
 
-    before_filter :find_ticket, except: [:index, :new, :create]
+    before_action :find_ticket, except: [:index, :new, :create]
   
     SAFE_ATTRIBUTES = [:name, :message, :queue]
     def index
